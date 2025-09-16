@@ -1,10 +1,18 @@
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { mutation } from './_generated/server';
 import { query } from './_generated/server';
 
 export const getDocuments = query({
   async handler(ctx) {
-    return await ctx.db.query('documents').collect();
+    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+
+    if (!userId) {
+      return [];
+    }
+    return await ctx.db
+      .query('documents')
+      .withIndex('by_tokenIdentifier', (q) => q.eq('tokenIdentifier', userId))
+      .collect();
   },
 });
 
@@ -13,8 +21,15 @@ export const createDocuments = mutation({
     title: v.string(),
   },
   async handler(ctx, args) {
+    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+
+    if (!userId) {
+      throw new ConvexError('Not authenticated');
+    }
+
     await ctx.db.insert('documents', {
       title: args.title,
+      tokenIdentifier: userId,
     });
   },
 });
