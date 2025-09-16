@@ -7,7 +7,7 @@ import { api } from '../../convex/_generated/api';
 
 export default function Home() {
   return (
-    <main className='flex justify-center items-center h-screen'>
+    <main className='flex flex-col justify-center items-center min-h-screen'>
       <div>
         <Authenticated>
           <UserButton />
