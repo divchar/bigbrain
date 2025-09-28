@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import ConvexClientProvider from './providers';
+import Header from './header';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,7 +23,10 @@ export default function RootLayout({
     <html lang='en' suppressHydrationWarning>
       <body className={inter.className}>
         <ClerkProvider>
-          <ConvexClientProvider>{children}</ConvexClientProvider>
+          <ConvexClientProvider>
+            <Header />
+            {children}
+          </ConvexClientProvider>
         </ClerkProvider>
       </body>
     </html>
